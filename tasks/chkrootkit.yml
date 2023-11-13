@@ -1,15 +1,19 @@
 ---
-- name: chkrootkit | set config file path for modern Debian-based distros
+# - name: chkrootkit | set config file path for modern Debian-based distros
+#   set_fact:
+#     chkrootkit_conf: "/etc/chkrootkit/chkrootkit.conf"
+#   when: (ansible_distribution == "Ubuntu" and ansible_distribution_major_version|int >= 22) or
+#         (ansible_distribution == 'Debian' and ansible_distribution_major_version|int >= 12)
+
+# - name: chkrootkit | set config file path for old Debian-based distros
+#   set_fact:
+#     chkrootkit_conf: "/etc/chkrootkit.conf"
+#   when: not ((ansible_distribution == "Ubuntu" and ansible_distribution_major_version|int >= 22) or
+#         (ansible_distribution == 'Debian' and ansible_distribution_major_version|int >= 12))
+
+- name: chkrootkit | set config file path for qs5779
   set_fact:
     chkrootkit_conf: "/etc/chkrootkit/chkrootkit.conf"
-  when: (ansible_distribution == "Ubuntu" and ansible_distribution_major_version|int >= 22) or
-        (ansible_distribution == 'Debian' and ansible_distribution_major_version|int >= 12)
-
-- name: chkrootkit | set config file path for old Debian-based distros
-  set_fact:
-    chkrootkit_conf: "/etc/chkrootkit.conf"
-  when: not ((ansible_distribution == "Ubuntu" and ansible_distribution_major_version|int >= 22) or
-        (ansible_distribution == 'Debian' and ansible_distribution_major_version|int >= 12))
 
 - name: chkrootkit | install tool from repo
   package:
@@ -45,3 +49,4 @@
     owner: root
     group: root
     mode: 0755
+  when: ansible_os_family != "Debian"  # qs5779 handles this in playbook
