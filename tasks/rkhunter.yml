@@ -1,72 +1,54 @@
 ---
 
 - name: Rkhunter | install tool from repo
-  package:
+  ansible.builtin.package:
     name: rkhunter
     state: present
     update_cache: true
 
 - name: Rkhunter | Debian specifics
+  when: ansible_os_family == "Debian"
   block:
-
     - name: Rkhunter | enable cron scheduled runs
-      lineinfile:
+      ansible.builtin.lineinfile:
         dest: "/etc/default/rkhunter"
         regexp: "^CRON_DAILY_RUN="
         line: "CRON_DAILY_RUN=\"true\""
         state: present
 
     - name: Rkhunter | enable weekly database updates
-      lineinfile:
+      ansible.builtin.lineinfile:
         dest: "/etc/default/rkhunter"
         regexp: "^CRON_DB_UPDATE="
         line: "CRON_DB_UPDATE=\"true\""
         state: present
 
     - name: Rkhunter | setup receiver email address for reports
-      lineinfile:
+      ansible.builtin.lineinfile:
         dest: "/etc/default/rkhunter"
         regexp: "^REPORT_EMAIL="
         line: "REPORT_EMAIL=\"{{ antirootkits_mail_to }}\""
         state: present
 
-    - name: Rkhunter | set package manager as DPKG
-      lineinfile:
-        dest: "/etc/rkhunter.conf"
-        regexp: "(^$|^#)PKGMGR="
-        line: "PKGMGR=DPKG"
-        state: present
-
-  when: ansible_os_family == "Debian"
-
 - name: Rkhunter | RedHat specifics
+  when: ansible_os_family == "RedHat"
   block:
-
     - name: Rkhunter | setup report scan level
-      lineinfile:
+      ansible.builtin.lineinfile:
         dest: "/etc/sysconfig/rkhunter"
         regexp: "^DIAG_SCAN="
         line: "DIAG_SCAN=\"{{ antirootkits_rkhunter_diag_scan }}\""
         state: present
 
     - name: Rkhunter | setup receiver email address for reports
-      lineinfile:
+      ansible.builtin.lineinfile:
         dest: "/etc/sysconfig/rkhunter"
         regexp: "^MAILTO="
         line: "MAILTO=\"{{ antirootkits_mail_to }}\""
         state: present
 
-    - name: Rkhunter | set package manager as RPM
-      lineinfile:
-        dest: "/etc/rkhunter.conf"
-        regexp: "(^$|^#)PKGMGR="
-        line: "PKGMGR=RPM"
-        state: present
-
-  when: ansible_os_family == "RedHat"
-
 - name: Rkhunter | enable receiver email address for warnings
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: "/etc/rkhunter.conf"
     regexp: "^#MAIL-ON-WARNING="
     line: "MAIL-ON-WARNING=\"{{ antirootkits_mail_to }}\""
@@ -74,33 +56,33 @@
     state: present
 
 - name: Rkhunter | remove void receiver email address for warnings (if present)
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: "/etc/rkhunter.conf"
     regexp: "^MAIL-ON-WARNING=\"\"$"
     state: absent
 
 - name: Rkhunter | setup receiver email address for warnings
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: "/etc/rkhunter.conf"
     regexp: "^MAIL-ON-WARNING="
     line: "MAIL-ON-WARNING=\"{{ antirootkits_mail_to }}\""
     state: present
 
 - name: Rkhunter | setup attended root ssh access
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: "/etc/rkhunter.conf"
     regexp: "^ALLOW_SSH_ROOT_USER="
     line: "ALLOW_SSH_ROOT_USER={{ rkhunter_allow_ssh_root_user }}"
     state: present
 
 - name: Rkhunter | whitelist /dev/shm/network/ifstate
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: "/etc/rkhunter.conf"
     insertafter: "^#ALLOWDEVFILE="
     line: "ALLOWDEVFILE=\"/dev/shm/network/ifstate\""
     state: present
 
 - name: Rkhunter | run propupd
-  command: /usr/bin/rkhunter --propupd
+  ansible.builtin.command: /usr/bin/rkhunter --propupd
   args:
     creates: /var/lib/rkhunter/db/rkhunter.dat

@@ -1,4 +1,4 @@
-# mablanco.antirootkits
+# qs5779.antirootkits
 
 Ansible role to deploy several rootkit and malware detection tools:
 
@@ -54,9 +54,13 @@ Example of how to use this role:
      antirootkits_mail_from: 'sender@example.com'
      antirootkits_mail_to: 'receiver@example.com'
   roles:
-     - { role: mablanco.antirootkits }
+     - { role: qs5779.antirootkits }
 ```
 
 ## License
 
 GPLv3
+
+## Credits
+
+Projec forked from https://github.com/mablanco/ansible-antirootkits
