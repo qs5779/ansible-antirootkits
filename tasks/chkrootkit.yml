@@ -17,7 +17,7 @@
 
 - name: Chkrootkit | install tool from repo
   ansible.builtin.package:
-    name: Chkrootkit
+    name: chkrootkit
     state: present
     update_cache: true
 
