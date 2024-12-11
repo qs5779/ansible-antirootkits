@@ -1,12 +1,13 @@
----
 # See https://pre-commit.com for more information
 # See https://pre-commit.com/hooks.html for more hooks
-exclude: ^attic/$
+---
+exclude: ^attic/$|^.github/PULL_REQUEST.md$
 default_install_hook_types: ["pre-commit", "commit-msg"]
-default_stages: ["commit"]
+default_stages: ["pre-commit"]
+
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.5.0
+    rev: v5.0.0
     hooks:
       - id: trailing-whitespace
       - id: check-added-large-files
@@ -23,50 +24,26 @@ repos:
       - id: no-commit-to-branch
         args: ['--branch', 'main']
 
-  - repo: https://github.com/ansible/ansible-lint.git
-    rev: v6.22.0
-    hooks:
-      - id: ansible-lint
-        stages: [commit]
-        files: \.(yaml|yml)$
-
   - repo: 'https://github.com/gruntwork-io/pre-commit'
-    rev: v0.1.23
+    rev: v0.1.24
     hooks:
       - id: 'shellcheck'
-        stages: [commit]
-        # args: ["--enable require-variable-braces,deprecate-which"]
-
-  - repo: local
-    hooks:
-      - id: encryption-check
-        name: Ansible Vault Encryption Check
-        description: Checks that vault files are encrypted
-        entry: /usr/local/bin/encryption-check.sh
-        files: ((^|/)vault|vault.y[a]{0,1}ml$|.vault$|^authorized_keys)
-        language: script
-        stages: [commit]
-      - id: commit-msg
-        name: conventional commit messages
-        language: pygrep
-        entry: '^(chore|test|feat|fix|build|docs|refactor)!?: ((?!.*(ing))(?!.*(ed))).*$'
-        args: [--multiline, --negate]
-        stages: [commit-msg]
+      # args: ["--enable require-variable-braces,deprecate-which"]
 
   - repo: https://github.com/pycqa/isort
-    rev: 5.12.0
+    rev: 5.13.2
     hooks:
       - id: isort
         name: isort (python)
 
   - repo: https://github.com/psf/black
-    rev: 23.11.0 # stable 0
+    rev: 24.10.0  # stable 0
     hooks:
       - id: black
         language_version: python3
 
   - repo: https://github.com/PyCQA/flake8
-    rev: 6.1.0
+    rev: 7.1.1
     hooks:
       - id: flake8
         args: [
@@ -74,5 +51,28 @@ repos:
           '--exclude=attic/*,files/cloudflare/*',
           '--ignore=E800,WPS229,WPS602,WPS605'
         ]
-      ## You can add flake8 plugins via `additional_dependencies`:
+        ## You can add flake8 plugins via `additional_dependencies`:
         additional_dependencies: ['wemake-python-styleguide']
+
+  - repo: https://github.com/ansible/ansible-lint.git
+    rev: v24.12.0
+    hooks:
+      - id: ansible-lint
+        stages: [pre-commit]
+        files: \.(yaml|yml)$
+
+  - repo: https://github.com/commitizen-tools/commitizen
+    rev: v4.1.0
+    hooks:
+      - id: commitizen
+        stages: [commit-msg]
+
+  - repo: local
+    hooks:
+      - id: encryption-check
+        name: Ansible Vault Encryption Check
+        description: Checks that vault files are encrypted
+        entry: /usr/local/bin/encryption-check.sh
+        files: ((^|/)vault|vault.y[a]{0,1}ml$|.vault$|^authorized_keys|_rsa$)
+        language: script
+...
