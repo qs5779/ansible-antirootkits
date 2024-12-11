@@ -24,9 +24,9 @@
 
 - name: Antirootkits | chkrootkit
   ansible.builtin.include_tasks: chkrootkit.yml
-  when:
-    - chkrootkit
-    - ansible_os_family == "Debian"
+  when: chkrootkit
+    # - chkrootkit
+    # - ansible_os_family == "Debian"
   tags: ['chkrootkit']
 
 - name: Antirootkits | Unhide
