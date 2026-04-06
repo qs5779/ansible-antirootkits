@@ -7,7 +7,7 @@ default_stages: ["pre-commit"]
 
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v5.0.0
+    rev: v6.0.0
     hooks:
       - id: trailing-whitespace
       - id: check-added-large-files
@@ -25,44 +25,20 @@ repos:
         args: ['--branch', 'main']
 
   - repo: 'https://github.com/gruntwork-io/pre-commit'
-    rev: v0.1.24
+    rev: v0.1.30
     hooks:
       - id: 'shellcheck'
       # args: ["--enable require-variable-braces,deprecate-which"]
 
-  - repo: https://github.com/pycqa/isort
-    rev: 5.13.2
-    hooks:
-      - id: isort
-        name: isort (python)
-
-  - repo: https://github.com/psf/black
-    rev: 24.10.0  # stable 0
-    hooks:
-      - id: black
-        language_version: python3
-
-  - repo: https://github.com/PyCQA/flake8
-    rev: 7.1.1
-    hooks:
-      - id: flake8
-        args: [
-          '--max-line-length=88',
-          '--exclude=attic/*,files/cloudflare/*',
-          '--ignore=E800,WPS229,WPS602,WPS605'
-        ]
-        ## You can add flake8 plugins via `additional_dependencies`:
-        additional_dependencies: ['wemake-python-styleguide']
-
   - repo: https://github.com/ansible/ansible-lint.git
-    rev: v24.12.2
+    rev: v26.4.0
     hooks:
       - id: ansible-lint
         stages: [pre-commit]
         files: \.(yaml|yml)$
 
   - repo: https://github.com/commitizen-tools/commitizen
-    rev: v4.1.0
+    rev: v4.13.9
     hooks:
       - id: commitizen
         stages: [commit-msg]
@@ -74,5 +50,11 @@ repos:
         description: Checks that vault files are encrypted
         entry: /usr/local/bin/encryption-check.sh
         files: ((^|/)vault|vault.y[a]{0,1}ml$|.vault$|^authorized_keys|_rsa$)
+        language: script
+      - id: j2lint
+        name: Jinja2 Lint Check
+        description: Checks syntax of jinja2 templates
+        entry: /data/share/bin/j2lint
+        files: \.j2$
         language: script
 ...
