@@ -7,8 +7,8 @@
     state: present
     update_cache: true
   when:
-    - ansible_os_family == "RedHat"
-    - ansible_distribution != "Fedora"
+    - ansible_facts.os_family == "RedHat"
+    - ansible_facts.distribution != "Fedora"
 
 - name: Unhide | install tool from repo
   ansible.builtin.package:

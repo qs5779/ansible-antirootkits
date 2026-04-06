@@ -14,7 +14,7 @@
     msg: "Set the value of 'antirootkits_mail_to' in either the inventory file or the playbook invoking this role."
 
 - name: Antirootkits | load OS Family specific defaults
-  ansible.builtin.include_vars: "{{ ansible_os_family | lower }}.yml"
+  ansible.builtin.include_vars: "{{ ansible_facts.os_family | lower }}.yml"
   tags: ['rkhunter', 'chkrootkit', 'unhide', 'shelldetector']
 
 - name: Antirootkits | Rkhunter
@@ -26,7 +26,7 @@
   ansible.builtin.include_tasks: chkrootkit.yml
   when: chkrootkit
     # - chkrootkit
-    # - ansible_os_family == "Debian"
+    # - ansible_facts.os_family == "Debian"
   tags: ['chkrootkit']
 
 - name: Antirootkits | Unhide
